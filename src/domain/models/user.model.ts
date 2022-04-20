@@ -1,4 +1,4 @@
-import { Exclude } from "class-transformer";
+
 
 export class UserModel 
 {
@@ -9,5 +9,7 @@ export class UserModel
     last_name: string;
   
     email: string;
+
+    role: string;
 
 }
