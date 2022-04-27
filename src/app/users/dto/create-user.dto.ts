@@ -1,16 +1,16 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
-import { IsEmail, IsEnum, IsNotEmpty, IsString, Length } from "class-validator";
-import { Roles } from "../enums/role.enum";
+import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
+import { Roles } from "../../../common/enums/role.enum";
 
 export class CreateUserDto 
 {
     
   @IsString()
-  @ApiProperty({ description: "firstname user" ,required: false })
+  @ApiProperty({ description: "firstname user" ,required: true })
   readonly first_name: string;
 
   @IsString()
-  @ApiProperty({ description: "firstname user" ,required: false })
+  @ApiProperty({ description: "firstname user" ,required: true })
   readonly last_name: string;
 
   @IsString()
@@ -30,6 +30,12 @@ export class CreateUserDto
       message: `must be a valid role value`,
     })
    readonly role: string;
+
+   @IsOptional()
+   @IsBoolean()
+   @ApiProperty({ description: "status by user" ,required: false,default :true })
+   readonly state: boolean;
+ 
 
 }
 

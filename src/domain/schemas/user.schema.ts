@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { compare } from "bcrypt";
+import { verify } from "argon2";
 import { Document } from "mongoose";
 
 @Schema({ timestamps: true, collection: "Users",versionKey: false })
@@ -33,7 +33,7 @@ export class User extends Document
    
 
     async validatePassword(password: string) :Promise<Boolean> {
-        return await compare(password, this.password);
+        return await verify(this.password,password);
       }
 }
 
