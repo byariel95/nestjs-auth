@@ -1,7 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { RegisterUserDto } from './dto';
-import { HashPasswordService } from '../../common/utils/hash-password';
+import { LoginDto, RegisterUserDto } from './dto';
+import { PasswordService } from '../../common/utils/password.service';
 import { Roles } from '../../common/enums/role.enum';
 import { AuthService } from '../../domain/services/auth.service';
 import { UsersService } from '../../domain/services';
@@ -11,17 +11,26 @@ import { UsersService } from '../../domain/services';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly hashPasswordService: HashPasswordService,
+    private readonly passwordService: PasswordService,
     private readonly usersService: UsersService,
     ) {}
   
   @Post('register')
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'create a new User' })
   async RegisterUser(@Body() registerUserDTO: RegisterUserDto ) 
   {
     const {password,first_name,last_name,email} = registerUserDTO;
-    const hashPassword = await this.hashPasswordService.hashPassword(password);
+    const hashPassword = await this.passwordService.hashPassword(password);
     const defaultRole = Roles.USER;
     return this.usersService.createUser(first_name,last_name,email,defaultRole,hashPassword);
+  }
+
+  @Post('signin')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'login with email and password' })
+  async login(@Body() loginDTO: LoginDto  ) 
+  {
+     return this.authService.validateUser(loginDTO);
   }
 }

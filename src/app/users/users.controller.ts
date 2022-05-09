@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MongoIdValidatePipe } from '../../common/pipes/object-id-validate.pipe';
-import { HashPasswordService } from '../../common/utils/hash-password';
+import { PasswordService } from '../../common/utils/password.service';
 import { UsersService } from '../../domain/services';
 import { CreateUserDto, UpdateUserDto } from './dto/create-user.dto';
 
@@ -12,11 +12,12 @@ export class UsersController
 {
   constructor(
     private readonly usersService: UsersService,
-    private readonly hashPasswordService: HashPasswordService,
+    private readonly PasswordService:PasswordService,
     ) {}
 
 
   @Get('users')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'get all users' })
   getAllUsers() 
   {
@@ -24,16 +25,18 @@ export class UsersController
   }
 
   @Post('user/new')
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'create a new User' })
   async saveUser(@Body() createUserDTO: CreateUserDto ) 
   {
     const {password,first_name,last_name,email,role,state} = createUserDTO;
-    const hashPassword = await this.hashPasswordService.hashPassword(password);
+    const hashPassword = await this.PasswordService.hashPassword(password);
 
     return this.usersService.createUser(first_name,last_name,email,role,hashPassword,state);
   }
 
   @Get('user/:id')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'get one user ' })
   async getUser(@Param('id',MongoIdValidatePipe) id: string ) 
   {
@@ -41,12 +44,13 @@ export class UsersController
   }
 
   @Patch('user/edit/:id')
+  @HttpCode(HttpStatus.OK)  
   @ApiOperation({ summary: 'edit a User' })
   async editUser(@Param('id',MongoIdValidatePipe) id:string,@Body()  updateUserDTO: UpdateUserDto ) 
   {
     if(updateUserDTO.hasOwnProperty('password')){
       const {password,...rest} = updateUserDTO;
-      const hashPassword = await this.hashPasswordService.hashPassword(password);
+      const hashPassword = await this.PasswordService.hashPassword(password);
 
       return this.usersService.updateUser(id,{...rest,password:hashPassword});
     }
@@ -55,6 +59,7 @@ export class UsersController
   }
 
   @Delete('user/delete/:id')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'remove user' })
   async removeUser(@Param('id',MongoIdValidatePipe) id : string) 
   {

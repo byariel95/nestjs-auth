@@ -67,7 +67,7 @@ export class UsersService
            throw new NotFoundException(`user with ${id} does not exist`);
        }
 
-       const userModel:UserModel  = {
+        const userModel:UserModel  = {
         id: user.id,
         first_name: user.first_name,
         last_name: user.last_name,
@@ -77,6 +77,12 @@ export class UsersService
   
       return userModel;
     }
+
+
+  async getUserByEmail (email: string): Promise<User>
+  {
+      return await this.userModel.findOne({email}).where('state').equals(true);
+  }
 
   async updateUser (id: string,RecordDTO: any ): Promise<UserModel>
   {

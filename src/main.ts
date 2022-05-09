@@ -14,7 +14,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+  }));
   app.useGlobalFilters(new AllExceptionFilter());
 
   initSwagger(app);

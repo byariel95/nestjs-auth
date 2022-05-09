@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags("Starter Route")
 @Controller()
 export class AppController 
 {

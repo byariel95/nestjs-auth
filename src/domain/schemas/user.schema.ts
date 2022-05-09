@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { verify } from "argon2";
 import { Document } from "mongoose";
 
 @Schema({ timestamps: true, collection: "Users",versionKey: false })
@@ -30,11 +29,6 @@ export class User extends Document
     @Prop({type: Number , default :true})
     state: boolean;
   
-   
-
-    async validatePassword(password: string) :Promise<Boolean> {
-        return await verify(this.password,password);
-      }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
