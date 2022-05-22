@@ -1,4 +1,4 @@
-import { ApiProperty, PartialType } from "@nestjs/swagger";
+import { ApiProperty, OmitType, PartialType } from "@nestjs/swagger";
 import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
 import { Roles } from "../../../common/enums/role.enum";
 
@@ -39,4 +39,13 @@ export class CreateUserDto
 
 }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password']),) {}
+
+
+export class ChangePasswordDto  {
+  @IsString()
+  @IsNotEmpty()
+  @Length(6)
+  @ApiProperty({ description: " new password ",required: true })
+  readonly password: string;
+}

@@ -3,10 +3,10 @@ import { INestApplication} from '@nestjs/common';
 
 export const initSwagger = (app: INestApplication) => {
     const swaggerConfig = new DocumentBuilder()
-   // .addBearerAuth()
+    .addBearerAuth()
     .setTitle('NestJS API')
     .setDescription('This is full rest API with similar DDD architecture  and best practices ') 
-    .setVersion('1.0')
+    .setVersion('2.0')
     .build();
     const document = SwaggerModule.createDocument(app,swaggerConfig);
     SwaggerModule.setup('api/docs',app, document,{
