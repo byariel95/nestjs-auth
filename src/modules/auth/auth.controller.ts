@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoginDto, RegisterUserDto } from './dto';
 import { PasswordService } from '../../common/utils/password.service';
-import { Roles } from '../../common/enums/role.enum';
+import { Role } from '../../common/enums/role.enum';
 import { AuthService } from '../../domain/services';
 import { UsersService } from '../../domain/services';
 
@@ -22,7 +22,7 @@ export class AuthController {
   {
     const {password,first_name,last_name,email} = registerUserDTO;
     const hashPassword = await this.passwordService.hashPassword(password);
-    const defaultRole = Roles.USER;
+    const defaultRole = Role.USER;
     return this.usersService.createUser(first_name,last_name,email,defaultRole,hashPassword);
   }
 

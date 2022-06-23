@@ -1,6 +1,6 @@
 import { ApiProperty, OmitType, PartialType } from "@nestjs/swagger";
 import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
-import { Roles } from "../../../common/enums/role.enum";
+import { Role } from "../../../common/enums/role.enum";
 
 export class CreateUserDto 
 {
@@ -25,7 +25,7 @@ export class CreateUserDto
   readonly password: string;
 
   @ApiProperty({ enum: ["User","Admin"], required:true})
-  @IsEnum(Roles, {
+  @IsEnum(Role, {
       each: true,
       message: `must be a valid role value`,
     })
@@ -39,7 +39,7 @@ export class CreateUserDto
 
 }
 
-export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password']),) {}
+export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password','role']),) {}
 
 
 export class ChangePasswordDto  {

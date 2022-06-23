@@ -15,7 +15,7 @@ export class UserModel
     @Expose()
     email: string;
 
-    @Exclude()
+    @Expose()
     role: string;
 
 }

@@ -1,14 +1,14 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ChangePasswordDto, CreateUserDto, UpdateUserDto } from './dto/create-user.dto';
-import { Auth } from '../../common/decorators';
+import { Auth, Roles } from '../../common/decorators';
 import { MongoIdValidatePipe } from '../../common/pipes/object-id-validate.pipe';
 import { PasswordService } from '../../common/utils/password.service';
 import { UsersService } from '../../domain/services';
+import { Role } from '../../common/enums/role.enum';
 
 
 @ApiTags('Routes for Users')
-@Auth()
 @Controller()
 export class UsersController 
 {
@@ -18,6 +18,8 @@ export class UsersController
     ) {}
 
 
+  @Roles(Role.ADMIN)
+  @Auth()
   @Get('users')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'get all users' })
@@ -26,6 +28,8 @@ export class UsersController
       return this.usersService.getAllUsers();
   }
 
+  @Roles(Role.ADMIN)
+  @Auth()
   @Post('user/new')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'create a new User' })
@@ -37,6 +41,8 @@ export class UsersController
     return this.usersService.createUser(first_name,last_name,email,role,hashPassword,state);
   }
 
+  @Roles(Role.ADMIN,Role.USER)
+  @Auth()
   @Get('user/:id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'get one user ' })
@@ -45,6 +51,8 @@ export class UsersController
     return this.usersService.getUser(id); 
   }
 
+  @Roles(Role.ADMIN,Role.USER)
+  @Auth()
   @Patch('user/edit/:id')
   @HttpCode(HttpStatus.OK)  
   @ApiOperation({ summary: 'edit a User' })
@@ -59,6 +67,8 @@ export class UsersController
     return this.usersService.updateUser(id,updateUserDTO);
   }
 
+  @Roles(Role.ADMIN,Role.USER)
+  @Auth()
   @Patch('user/change-password/:id')
   @HttpCode(HttpStatus.OK)  
   @ApiOperation({ summary: 'change user password  ', description: 'password must be at least 8 characters' })
@@ -70,7 +80,8 @@ export class UsersController
   }
 
   
-
+  @Roles(Role.ADMIN)
+  @Auth()
   @Delete('user/delete/:id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'remove user' })
