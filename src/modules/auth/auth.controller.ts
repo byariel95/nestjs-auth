@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoginDto, RegisterUserDto } from './dto';
 import { PasswordService } from '../../common/utils/password.service';
 import { Roles } from '../../common/enums/role.enum';
-import { AuthService } from '../../domain/services/auth.service';
+import { AuthService } from '../../domain/services';
 import { UsersService } from '../../domain/services';
 
 @ApiTags('Routes for Auth')
