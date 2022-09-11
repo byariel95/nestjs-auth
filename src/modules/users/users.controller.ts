@@ -4,7 +4,7 @@ import { ChangePasswordDto, CreateUserDto, UpdateUserDto } from './dto/create-us
 import { Auth, Roles } from '../../common/decorators';
 import { MongoIdValidatePipe } from '../../common/pipes/object-id-validate.pipe';
 import { PasswordService } from '../../common/utils/password.service';
-import { UsersService } from '../../domain/services';
+import { UsersService } from './users.service';
 import { Role } from '../../common/enums/role.enum';
 
 

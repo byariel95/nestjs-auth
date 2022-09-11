@@ -1,28 +1,27 @@
-import { Controller, Get, HttpCode, HttpStatus, Req} from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { Body, Controller, Get, Post} from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserModel } from '../../domain/models';
 import { Auth, Roles,UserReq } from '../../common/decorators';
 import { Role } from '../../common/enums/role.enum';
-import { ProductsService } from '../../domain/services/';
+import { ProductsService } from './products.service';
+import { CreateProductDto } from './dto/product.dto';
 
-@Controller('products')
+@ApiTags('Product Module')
+@Controller()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
 
-  @Roles(Role.ADMIN,Role.USER)
+  @Roles(Role.ADMIN)
   @Auth()
-  @Get('users')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'get all users' })
-  getAllUsers(@UserReq() user: UserModel ) 
+  @Post('product/new')
+  @ApiOperation({ summary: 'Create One product' })
+  createProduct(@UserReq() user: UserModel, @Body() product :CreateProductDto ) 
   {
-      return {
-        myUserID: user.id,
-        myName: user.first_name,
-        myLastName: user.last_name,
-        myRole: user.role,
-        message: 'success'
-      };
+      try {
+          return this.productsService.createProduct(product);
+      } catch (error) {
+        throw error
+      }
   }
 }
