@@ -4,6 +4,7 @@ import { MongooseDatabaseModule } from './common/database/mongoose-module/mongoo
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductsModule } from './modules/products/products.module';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ProductsModule } from './modules/products/products.module';
     UsersModule,
     AuthModule,
     ProductsModule,
+    CloudinaryModule,
   ]
 })
 export class AppModule {}
