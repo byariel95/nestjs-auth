@@ -1,22 +1,23 @@
 import { 
   Body, 
   Controller, 
+  Get, 
   HttpStatus, 
   InternalServerErrorException, 
   Logger, 
   Post, 
+  Query, 
   UploadedFile, 
   UseInterceptors
 } from '@nestjs/common';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UserModel } from '../../domain/models';
 import { Auth, Roles,UserReq } from '../../common/decorators';
 import { ResponseData } from '../../common/utils/response-data.service';
 import { editFileName, imageFileFilter } from '../../common/utils/image-utils';
 import { Role } from '../../common/enums/role.enum';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/product.dto';
+import { CreateProductDto, SearchDto} from './dto/';
 import { diskStorage } from 'multer';
 
 @ApiTags('Product Module')
@@ -29,15 +30,17 @@ export class ProductsController {
 
     private readonly logger = new Logger('Product Controller');  
 
-  @Roles(Role.ADMIN)
+  
+
+  @Roles(Role.ADMIN,Role.USER)
   @Auth()
   @Post('product/new')
   @ApiOperation({ summary: 'Create One product' })
-  createProduct(@UserReq() user: UserModel, @Body() product :CreateProductDto ) 
+  async createProduct( @Body() product :CreateProductDto ) 
   {
     try 
     {
-        const response = this.productsService.createProduct(product);
+        const response = await this.productsService.createProduct(product);
         return this.responseData.resultResponse(HttpStatus.OK, 'success', response);
     } catch (error) 
     {
@@ -46,6 +49,26 @@ export class ProductsController {
     }
   }
 
+
+  @Roles(Role.ADMIN,Role.USER)
+  @Auth()
+  @Get('products')
+  @ApiOperation({ summary: 'Get All products' })
+  async getProducts(@Query() params?: SearchDto ) 
+  {
+    try 
+    {
+        const response = await this.productsService.getProducts(params);
+        return this.responseData.resultResponse(HttpStatus.OK, 'success', response);
+    } catch (error) 
+    {
+        this.logger.debug(`error in createProduct ${error}`);
+        throw new InternalServerErrorException(`Internal Server Exception`)
+    }
+  }
+
+  @Roles(Role.ADMIN)
+  @Auth()
   @Post('product/upload/image')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
