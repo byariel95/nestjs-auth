@@ -17,7 +17,7 @@ import { ResponseData } from '../../common/utils/response-data.service';
 import { editFileName, imageFileFilter } from '../../common/utils/image-utils';
 import { Role } from '../../common/enums/role.enum';
 import { ProductsService } from './products.service';
-import { CreateProductDto, SearchDto} from './dto/';
+import { CreateProductDto, SearchDto} from './dto';
 import { diskStorage } from 'multer';
 
 @ApiTags('Product Module')
