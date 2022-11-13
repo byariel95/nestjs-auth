@@ -12,7 +12,7 @@ export const imageFileFilter = (req, file, callback) => {
     const date = new Date()
     const todayDate = new Date().toISOString().slice(0, 10);
     const currentTime = `${date.getHours()}:${date.getMinutes()}`
-    const fullDate =`${todayDate}-T${currentTime}`
+    const fullDate =`${todayDate}-${currentTime}`
     const randomName = Array(4)
       .fill(null)
       .map(() => Math.round(Math.random() * 16).toString(16))

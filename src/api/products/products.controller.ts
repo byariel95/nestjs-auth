@@ -8,11 +8,12 @@ import {
   Post, 
   Query, 
   UploadedFile, 
+  UploadedFiles, 
   UseInterceptors
 } from '@nestjs/common';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Auth, Roles,UserReq } from '../../common/decorators';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Auth, Roles } from '../../common/decorators';
 import { ResponseData } from '../../common/utils/response-data.service';
 import { editFileName, imageFileFilter } from '../../common/utils/image-utils';
 import { Role } from '../../common/enums/role.enum';
@@ -67,8 +68,8 @@ export class ProductsController {
     }
   }
 
-  @Roles(Role.ADMIN)
-  @Auth()
+  //@Roles(Role.ADMIN)
+ // @Auth()
   @Post('product/upload/image')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -93,13 +94,55 @@ export class ProductsController {
     }
   }))
   @ApiOperation({ summary: 'upload images' })
-  uploadProductImages(@UploadedFile() file: Express.Multer.File) 
+  async uploadProductImage(@UploadedFile() file: Express.Multer.File) 
   {
     try 
     {   
-        const image = this.productsService.uploadImageToCloudinary(file.path)
+        const image = await this.productsService.uploadImageToCloudinary(file.path)
         //const image = this.productsService.uploadImage(file); 
         return this.responseData.resultResponse(HttpStatus.OK, 'success', image);
+    } catch (error) 
+    {
+        this.logger.debug(`error in upload ${error}`);
+        throw new InternalServerErrorException(`Internal Server Exception`)
+    }
+  }
+
+  @Post('product/upload/images')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties:{
+        files: {
+          type: 'array',
+          items:{
+            type: "string",
+            format: 'binary',
+          }
+        },
+      }
+    }
+  })
+  @UseInterceptors(FilesInterceptor('files',6,{
+    storage: diskStorage({
+      destination : './uploads/images',
+      filename: editFileName
+    }),
+    fileFilter: imageFileFilter,
+    limits : {
+      fileSize: 2*1024*1024
+    }
+  }))
+  @ApiOperation({ summary: 'upload images of products' })
+  async uploadProductsImages(@UploadedFiles() files: Array<Express.Multer.File>) 
+  {
+    try 
+    {   
+        const paths = files.map(image => image.path);  
+        console.log(paths);
+        const response =  await this.productsService.uploadImagesToCloudinary(paths); 
+        return this.responseData.resultResponse(HttpStatus.OK, 'success', response);
     } catch (error) 
     {
         this.logger.debug(`error in upload ${error}`);

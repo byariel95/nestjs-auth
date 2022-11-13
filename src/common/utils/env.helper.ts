@@ -5,7 +5,7 @@ export function getFileEnv(): string
 {
     const env: string | undefined = process.env.NODE_ENV;
     const devEnvPath: string = `${process.cwd()}/.env`
-    const localEnvPath : string = `${process.cwd()}/.local.env`
+    const localEnvPath : string = `${process.cwd()}/local.env`
 
     let filename = '';
     if (env === 'dev') 

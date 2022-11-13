@@ -61,18 +61,6 @@ export class ProductsService
 
     }
 
-    async uploadImage (file: Express.Multer.File ) 
-    {
-        try {
-            const response = await this.cloudinaryService.uploadImage(file);
-            console.log(response);
-            return response
-        } catch (error) {
-            this.logger.warn(`Error in upload image: ${error} `);
-            throw new InternalServerErrorException('internal server error');
-        }
-
-    }
 
     async uploadImageToCloudinary (path: string) 
     {
@@ -80,6 +68,27 @@ export class ProductsService
             const savedImage = await this.cloudinaryService.uploadImageV2(path);
              unlinkSync(path);
             return savedImage;
+        } catch (error) {
+            this.logger.warn(`Error in uploadImageToCloudinary: ${error} `);
+            throw new InternalServerErrorException('internal server error');
+        }
+
+    }
+
+
+    async uploadImagesToCloudinary (paths: string[]) 
+    {
+        try {
+            const urls = await Promise.allSettled(paths.map(async path => {
+               const responseImage =  await this.cloudinaryService.uploadImageV2(path);
+               return responseImage.url
+            }));
+            //TODO : UPDATE PIRCTURES IN PRODUCTS
+
+            for (const index in paths){
+                unlinkSync(paths[index]);
+            }
+            return urls;
         } catch (error) {
             this.logger.warn(`Error in uploadImageToCloudinary: ${error} `);
             throw new InternalServerErrorException('internal server error');

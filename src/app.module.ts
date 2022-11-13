@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseDatabaseModule } from './common/database/mongoose-module/mongoose.module';
-import { UsersModule } from './api/users/users.module';
-import { AuthModule } from './api/auth/auth.module';
-import { ProductsModule } from './api/products/products.module';
-import { CloudinaryModule } from './api/cloudinary/cloudinary.module';
-import { CategoryModule } from './api/category/category.module';
+import { MongooseDatabaseModule } from './domain/database/mongoose-module/mongoose.module';
 import { getFileEnv } from './common/utils/env.helper';
+import { ApiModule } from './api/api.module';
 
 const envFilePath: string = getFileEnv();
 
@@ -18,11 +14,7 @@ const envFilePath: string = getFileEnv();
       isGlobal: true
     }),
     MongooseDatabaseModule,
-    UsersModule,
-    AuthModule,
-    ProductsModule,
-    CloudinaryModule,
-    CategoryModule,
+    ApiModule
   ]
 })
 export class AppModule {}
