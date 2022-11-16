@@ -76,23 +76,42 @@ export class ProductsService
     }
 
 
-    async uploadImagesToCloudinary (paths: string[]) 
+    async uploadImagesToCloudinary (paths: string[],id: string) : Promise<ProductModel>
     {
         try {
-            const urls = await Promise.allSettled(paths.map(async path => {
+            const images: any = await Promise.allSettled(paths.map(async path => {
                const responseImage =  await this.cloudinaryService.uploadImageV2(path);
-               return responseImage.url
+               return {
+                public_id: responseImage.public_id,
+                url: responseImage.url,
+               }
             }));
-            //TODO : UPDATE PIRCTURES IN PRODUCTS
+
+            const pictures = images.map(image => image.value);
+            await this.productModel.updateOne({_id:id},{images:pictures}) 
 
             for (const index in paths){
                 unlinkSync(paths[index]);
             }
-            return urls;
+            const product = await this.productModel.findById(id)
+            return plainToClass(ProductModel, product);
         } catch (error) {
             this.logger.warn(`Error in uploadImageToCloudinary: ${error} `);
             throw new InternalServerErrorException('internal server error');
         }
 
     }
+
+    //TODO DELETE IMAGES FROM CLOUDINARY
+    // async removeImagesToCloudinary (images: string[],id: string) 
+    // {
+    //     try {
+            
+    //         return product;
+    //     } catch (error) {
+    //         this.logger.warn(`Error in uploadImageToCloudinary: ${error} `);
+    //         throw new InternalServerErrorException('internal server error');
+    //     }
+
+    // }
 }

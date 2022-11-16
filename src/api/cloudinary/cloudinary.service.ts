@@ -16,7 +16,7 @@ export class CloudinaryService
         });
       }
 
-      async uploadImageV2(file: string) : Promise<UploadApiResponse | UploadApiErrorResponse> 
+    async uploadImageV2(file: string) : Promise<UploadApiResponse | UploadApiErrorResponse> 
     {
 
       try {
@@ -24,6 +24,18 @@ export class CloudinaryService
           folder: 'pos',
           use_filename: true,
         }); 
+        return response
+      } catch (error) {
+        throw new InternalServerErrorException('error to upload file to cloudinary');
+      }
+        
+    }
+
+    async removeImage(publicId: string) : Promise<UploadApiResponse | UploadApiErrorResponse> 
+    {
+
+      try {
+        const response = await cloudinary.uploader.destroy(publicId);
         return response
       } catch (error) {
         throw new InternalServerErrorException('error to upload file to cloudinary');

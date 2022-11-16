@@ -5,6 +5,8 @@ import {
   HttpStatus, 
   InternalServerErrorException, 
   Logger, 
+  Param, 
+  ParseUUIDPipe, 
   Post, 
   Query, 
   UploadedFile, 
@@ -99,7 +101,6 @@ export class ProductsController {
     try 
     {   
         const image = await this.productsService.uploadImageToCloudinary(file.path)
-        //const image = this.productsService.uploadImage(file); 
         return this.responseData.resultResponse(HttpStatus.OK, 'success', image);
     } catch (error) 
     {
@@ -108,7 +109,7 @@ export class ProductsController {
     }
   }
 
-  @Post('product/upload/images')
+  @Post('product/:productId/upload/images')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -135,13 +136,12 @@ export class ProductsController {
     }
   }))
   @ApiOperation({ summary: 'upload images of products' })
-  async uploadProductsImages(@UploadedFiles() files: Array<Express.Multer.File>) 
+  async uploadProductsImages(@UploadedFiles() files: Array<Express.Multer.File>, @Param('productId') id : string) 
   {
     try 
     {   
         const paths = files.map(image => image.path);  
-        console.log(paths);
-        const response =  await this.productsService.uploadImagesToCloudinary(paths); 
+        const response =  await this.productsService.uploadImagesToCloudinary(paths,id); 
         return this.responseData.resultResponse(HttpStatus.OK, 'success', response);
     } catch (error) 
     {

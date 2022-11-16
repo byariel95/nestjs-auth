@@ -29,8 +29,8 @@ export class Product extends Document
     @Prop({type: String})
     detail: string;
 
-    @Prop({ type: [String], required: false })
-    images: string[];
+    @Prop({ type: [Object], required: false })
+    images: object[];
   
     @Prop({type: Number, default :true})
     state: boolean;
