@@ -13,6 +13,7 @@ export class AuthService
         private readonly userService: UsersService,
         private readonly passwordService: PasswordService,
         private readonly jwtService: JwtService,
+       
     ) {}
 
 

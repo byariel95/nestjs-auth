@@ -6,7 +6,7 @@ export const initSwagger = (app: INestApplication) => {
     .addBearerAuth()
     .setTitle('NestJS API')
     .setDescription('This is full rest API with similar DDD architecture  and best practices ') 
-    .setVersion('2.5')
+    .setVersion('3.0')
     .build();
     const document = SwaggerModule.createDocument(app,swaggerConfig);
     SwaggerModule.setup('api/docs',app, document,{

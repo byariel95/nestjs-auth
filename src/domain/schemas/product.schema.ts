@@ -17,8 +17,20 @@ export class Product extends Document
     @Prop({type: Number})
     quantity: number;
 
-    @Prop({ type: [String], required: false })
-    images: string[];
+    @Prop({type: Number})
+    cost_price: number;
+
+    @Prop({type: String})
+    bar_code: string;
+
+    @Prop({type: String})
+    brand: string;
+
+    @Prop({type: String})
+    detail: string;
+
+    @Prop({ type: [Object], required: false })
+    images: object[];
   
     @Prop({type: Number, default :true})
     state: boolean;

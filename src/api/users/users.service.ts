@@ -13,13 +13,15 @@ export class UsersService
 
     private readonly logger = new Logger('User Service');
 
-  async createUser(first_name:string,last_name:string,email:string,role:string,password:string,state?:boolean) : Promise<UserModel>
+  async createUser(first_name:string,last_name:string,email:string,role:string,password:string,state?:boolean) 
   {
     try 
     {
       const user = new this.userModel({first_name,last_name,email,role,password,state});
-      const newUser = await user.save(); 
-      return plainToClass(UserModel, newUser);
+      await user.save(); 
+      return {
+        message: 'User Was created Successfully'
+      }
 
     } 
     catch (error) 
