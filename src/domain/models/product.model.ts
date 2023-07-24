@@ -13,7 +13,7 @@ export class ProductModel
     brand: string;
     
     @Expose()
-    description: string =  'No Information' 
+    description: string ;
   
     @Expose()
     price: number;
@@ -25,12 +25,12 @@ export class ProductModel
     quantity: number;
 
     @Expose()
-    bar_code: string =  'No Information' 
+    bar_code: string ; 
 
     @Expose()
-    detail: string = 'No Information' 
+    detail: string ;
 
     @Expose()
-    images: string[];
+    images: object[];
 
 }
